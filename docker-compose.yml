@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+
+  db:
+    image: mysql:5.7.33
+    restart: always
+    environment:
+      MYSQL_DATABASE: flask
+      MYSQL_USER: allan
+      MYSQL_PASSWORD: flask
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - "33067:3306"
+
+  queue:
+    build: .
+    volumes:
+      - ./flask_backend:/code
+    command: python consumer.py
+    depends_on: 
+      - db
+
+  flask:
+    build: .
+    command: python app.py
+    ports:
+      - "8002:5000"
+    volumes:
+      - ./flask_backend:/code
+    depends_on:
+      - db
