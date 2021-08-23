@@ -14,14 +14,6 @@ services:
     ports:
       - "33067:3306"
 
-  queue:
-    build: .
-    volumes:
-      - ./flask_backend:/code
-    command: python consumer.py
-    depends_on: 
-      - db
-
   flask:
     build: .
     command: python app.py
@@ -31,3 +23,11 @@ services:
       - ./flask_backend:/code
     depends_on:
       - db
+
+  queue:
+    build: .
+    volumes:
+      - ./flask_backend:/code
+    command: python consumer.py
+    depends_on: 
+      - flask
